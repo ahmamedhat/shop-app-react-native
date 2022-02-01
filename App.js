@@ -1,21 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { LogBox } from 'react-native';
+import { Provider } from 'react-redux';
+import {createStore ,combineReducers , applyMiddleware} from 'redux';
+import ProductsNavigation from './navigation/productsNavigation';
+import cart from './store/reducers/cart';
+import orders from './store/reducers/orders';
+import products from './store/reducers/products';
+import ReduxThunk from 'redux-thunk'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+
+const rootReducer = combineReducers({
+  products: products,
+  cart: cart,
+  orders: orders
+})
+
+const store = createStore(rootReducer , applyMiddleware(ReduxThunk))
+
+
+
+export default () => {
+
+  LogBox.ignoreLogs([
+    'Non-serializable values were found in the navigation state',
+  ]);
+
+  return ( 
+    <Provider store = {store}>
+      <ProductsNavigation />
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
